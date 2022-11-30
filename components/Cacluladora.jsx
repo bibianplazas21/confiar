@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { GoDiffAdded } from "react-icons/go";
+import { AiOutlineMinusSquare } from "react-icons/ai";
 
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -7,21 +9,27 @@ const formatter = new Intl.NumberFormat("en-US", {
 });
 
 const Cacluladora = () => {
-  const [cantidad, setCantidad] = useState(1000000);
+  const [cantidad, setCantidad] = useState(1);
+  const [monto, setMonto] = useState(0);
   const [cuotas, setCuotas] = useState(12);
-  const[pagomes, setPagoMes] = useState(0)
+  const [pagomes, setPagoMes] = useState(0);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    const calcular =()=>{
-        let totala=(parseFloat(cantidad)+parseFloat(cantidad*0.0328))
-        setTotal(totala)
-        setPagoMes(totala/cuotas)
-    }
-    calcular()
-  }, [cantidad, cuotas])
-  
+    const calcular = () => {
+      let totala = parseFloat(cantidad) + parseFloat(cantidad * 0.0328);
+      totala = totala * 1000000;
+      setTotal(totala);
+      setPagoMes(totala / cuotas);
+      setMonto(cantidad * 1000000);
+    };
+    calcular();
+  }, [cantidad, cuotas]);
 
+  const handleAdd = (type) => {
+    setCantidad(cantidad + 1);
+  };
+console.log(cantidad)
   return (
     <section className="min-h-[500px] p-10 bg-gradient-to-tr from-primaryPink to-primaryPurple rounded-xl shadow shadow-secondaryDark">
       <div className="mb-4">
@@ -40,37 +48,68 @@ const Cacluladora = () => {
                 Cuanto necesitas
               </p>
               <p className="text-primaryPink text-lg font-semibold">
-                {formatter.format(cantidad)}
+                {formatter.format(monto)}
               </p>
             </div>
-            <input
-              className="w-full"
-              type="range"
-              value={cantidad}
-              min="1000000"
-              max="300000000"
-              id="range"
-              onChange={({ target }) => setCantidad(target.value)}
-              //oninput="rangevalue.value=value"
-            />
+            <div className="flex">
+              <button
+                className="text-primaryPink mr-4 hover:scale-105 hover:text-opacity-50"
+                onClick={() => (cantidad > 1 ? setCantidad(cantidad - 1) : "")}
+              >
+                <AiOutlineMinusSquare size={30} />
+              </button>
+              <input
+                className="w-full"
+                type="range"
+                value={cantidad}
+                min="1"
+                max="300"
+                id="range"
+                onChange={({ target }) => setCantidad(parseInt(target.value))}
+              />
+              <button
+                className="text-primaryPink  hover:scale-105 hover:text-opacity-50"
+                onClick={() => handleAdd("cant")}
+              >
+                <GoDiffAdded size={30} />
+              </button>
+            </div>
           </div>
           <div className="w-full ">
             <div className="flex justify-between">
               <p className="text-secondaryDark text-lg font-bold">
                 Fija tu plazo
               </p>
-              <p className="text-primaryPink text-lg font-semibold">{cuotas} meses</p>
+              <p className="text-primaryPink text-lg font-semibold">
+                {cuotas} meses
+              </p>
             </div>
-            <input
-              className="w-full"
-              type="range"
-              value={cuotas}
-              min="12"
-              max="240"
-              id="range"
-              onChange={({ target }) => setCuotas(target.value)}
-              //oninput="rangevalue.value=value"
-            />
+            <div className="flex">
+              <button
+                className="text-primaryPink mr-4 hover:scale-105 hover:text-opacity-50"
+                onClick={() => (cuotas > 12 ? setCuotas(cuotas - 1) : "")}
+              >
+                <AiOutlineMinusSquare size={30} />
+              </button>
+              <input
+                className="w-full"
+                type="range"
+                value={cuotas}
+                min="12"
+                max="240"
+                id="range"
+                onChange={({ target }) => setCuotas(parseInt(target.value))}
+                //oninput="rangevalue.value=value"
+              />
+              <button
+                className="text-primaryPink  hover:scale-105 hover:text-opacity-50"
+                onClick={() =>
+                  cuotas < 240 ? setCuotas(cuotas + 1) : setCuotas(300)
+                }
+              >
+                <GoDiffAdded size={30} />
+              </button>
+            </div>
           </div>
           <div className="text-right">
             <button className="bg-primaryPurple py-3 px-10 rounded-lg md:w-1/2 text-white font-bold  hover:opacity-95 hover:scale-105 transition-all ease-in-out ">
@@ -83,7 +122,7 @@ const Cacluladora = () => {
             <p className="text-primaryPurple font-bold  ">Tu Monto</p>
             <div className="h-20 border border-primaryPink border-opacity-20 rounded-md flex items-center justify-center">
               <p className="text-primaryPurple font-bold text-3xl md:text-4xl">
-                {formatter.format(cantidad)}
+                {formatter.format(monto)}
               </p>
             </div>
           </div>
@@ -91,8 +130,7 @@ const Cacluladora = () => {
             <p className="text-primaryPurple font-bold  ">Tus cuotas</p>{" "}
             <div className="h-20 border border-primaryPink border-opacity-20 rounded-md flex items-center justify-center">
               <p className="text-primaryPurple font-bold text-3xl">
-              {formatter.format(pagomes)}
-                
+                {formatter.format(pagomes)}
               </p>
             </div>
           </div>
